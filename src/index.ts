@@ -1,16 +1,12 @@
 import { PrismaClient } from "@prisma/client";
+import app from "./app";
 
 const prisma = new PrismaClient();
 
+const port = process.env.PORT || 5000;
 async function main() {
-  const postUser = await prisma.user.create({
-    data: {
-      email: "shayem3@gmail.com",
-      name: "Shayem Hossain 2",
-    },
+  app.listen(port, () => {
+    console.log(`Server running at ${port}`);
   });
-  console.log(postUser);
-  // const users = await prisma.user.findMany();
-  // console.log(users);
 }
 main();
