@@ -35,3 +35,24 @@ export const insertOrUpdateProfileIntoDB = async (
   });
   return result;
 };
+
+export const getUsersToDB = async () => {
+  const result = await prisma.user.findMany({
+    include: {
+      profile: true,
+    },
+  });
+  return result;
+};
+
+export const getSingleUsersToDB = async (id: number) => {
+  const result = await prisma.user.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      profile: true,
+    },
+  });
+  return result;
+};
