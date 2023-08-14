@@ -15,13 +15,18 @@ const insertPost = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 const getAllPost = async (req: Request, res: Response, next: NextFunction) => {
-  const result = await postService.getAllPostToDB();
+  const options = req.query;
+  try {
+    const result = await postService.getAllPostToDB(options);
 
-  res.status(200).send({
-    success: true,
-    message: "Posts found successfully",
-    data: result,
-  });
+    res.status(200).send({
+      success: true,
+      message: "Posts found successfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const postController = { insertPost, getAllPost };
