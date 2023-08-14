@@ -14,4 +14,14 @@ const insertPost = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
-export const postController = { insertPost };
+const getAllPost = async (req: Request, res: Response, next: NextFunction) => {
+  const result = await postService.getAllPostToDB();
+
+  res.status(200).send({
+    success: true,
+    message: "Posts found successfully",
+    data: result,
+  });
+};
+
+export const postController = { insertPost, getAllPost };
