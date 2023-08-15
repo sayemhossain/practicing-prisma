@@ -15,32 +15,66 @@ const getAllPostToDB = async (options: any) => {
   const skip = parseInt(limit) * parseInt(page) - parseInt(limit);
   const take = parseInt(limit);
 
-  const result = await prisma.post.findMany({
-    skip,
-    take,
-    include: { author: true, category: true },
-    orderBy:
-      sortBy && sortOrder ? { [sortBy]: sortOrder } : { createdAt: "desc" },
-    where: {
-      OR: [
-        {
-          title: {
-            contains: searchTerm,
-            mode: "insensitive",
-          },
-        },
-        {
-          author: {
-            name: {
+  // Use transaction rollback here using prisma
+  return await prisma.$transaction(async (tx) => {
+    const result = await tx.post.findMany({
+      skip,
+      take,
+      include: { author: true, category: true },
+      orderBy:
+        sortBy && sortOrder ? { [sortBy]: sortOrder } : { createdAt: "desc" },
+      where: {
+        OR: [
+          {
+            title: {
               contains: searchTerm,
               mode: "insensitive",
             },
           },
-        },
-      ],
+          {
+            author: {
+              name: {
+                contains: searchTerm,
+                mode: "insensitive",
+              },
+            },
+          },
+        ],
+      },
+    });
+
+    // For counting total post
+    const total = await tx.post.count();
+
+    return { data: result, total };
+  });
+};
+
+const updatePostToDB = async (
+  id: number,
+  payload: Partial<Post>
+): Promise<Post> => {
+  const result = await prisma.post.update({
+    where: {
+      id,
+    },
+    data: payload,
+  });
+  return result;
+};
+
+const deletePostToDB = async (id: number): Promise<Post> => {
+  const result = await prisma.post.delete({
+    where: {
+      id,
     },
   });
   return result;
 };
 
-export const postService = { insertPostIntoDB, getAllPostToDB };
+export const postService = {
+  insertPostIntoDB,
+  getAllPostToDB,
+  updatePostToDB,
+  deletePostToDB,
+};

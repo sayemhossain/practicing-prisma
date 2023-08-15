@@ -22,6 +22,24 @@ const getAllPost = async (req: Request, res: Response, next: NextFunction) => {
     res.status(200).send({
       success: true,
       message: "Posts found successfully",
+      total: result.total,
+      data: result.data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const updatePost = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const id = parseInt(req.params.id);
+    const data = req.body;
+
+    const result = await postService.updatePostToDB(id, data);
+
+    res.status(200).send({
+      success: true,
+      message: "Posts updated successfully",
       data: result,
     });
   } catch (error) {
@@ -29,4 +47,25 @@ const getAllPost = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-export const postController = { insertPost, getAllPost };
+const deletePost = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const id = parseInt(req.params.id);
+
+    const result = await postService.deletePostToDB(id);
+
+    res.status(200).send({
+      success: true,
+      message: "Posts deleted successfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const postController = {
+  insertPost,
+  getAllPost,
+  updatePost,
+  deletePost,
+};
