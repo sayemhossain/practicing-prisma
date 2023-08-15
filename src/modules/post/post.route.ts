@@ -6,5 +6,6 @@ router.post("/create-post", postController.insertPost);
 router.get("/get-all-post", postController.getAllPost);
 router.patch("/update-post/:id", postController.updatePost);
 router.delete("/delete-post/:id", postController.deletePost);
+router.get("/learn-query", postController.learnAggregateAndGroping);
 
 export const postRoutes = router;

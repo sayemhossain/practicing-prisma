@@ -53,13 +53,16 @@ const getAllPostToDB = async (options: any) => {
 const updatePostToDB = async (
   id: number,
   payload: Partial<Post>
-): Promise<Post> => {
-  const result = await prisma.post.update({
-    where: {
-      id,
-    },
-    data: payload,
-  });
+): Promise<Post | number> => {
+  //   const result = await prisma.post.update({
+  //     where: {
+  //       id,
+  //     },
+  //     data: payload,
+  //   });
+
+  const result =
+    await prisma.$executeRaw`UPDATE posts SET title=${payload.title} WHERE id=${id} `;
   return result;
 };
 
@@ -72,9 +75,38 @@ const deletePostToDB = async (id: number): Promise<Post> => {
   return result;
 };
 
+const learnAggregateAndGropingToDB = async () => {
+  //   const result = await prisma.post.aggregate({
+  //     _avg: {
+  //       authorId: true,
+  //     },
+  //     _sum: {
+  //       id: true,
+  //     },
+  //     _max: {
+  //       id: true,
+  //     },
+  //     _min: {
+  //       id: true,
+  //     },
+  //     _count: {
+  //       id: true,
+  //     },
+  //   });
+
+  const result = await prisma.post.groupBy({
+    by: ["authorId"],
+    _count: {
+      authorId: true,
+    },
+  });
+  return result;
+};
+
 export const postService = {
   insertPostIntoDB,
   getAllPostToDB,
   updatePostToDB,
   deletePostToDB,
+  learnAggregateAndGropingToDB,
 };

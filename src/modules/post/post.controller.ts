@@ -63,9 +63,28 @@ const deletePost = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const learnAggregateAndGroping = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const result = await postService.learnAggregateAndGropingToDB();
+
+    res.status(200).send({
+      success: true,
+      message: "Posts find successfully",
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const postController = {
   insertPost,
   getAllPost,
   updatePost,
   deletePost,
+  learnAggregateAndGroping,
 };

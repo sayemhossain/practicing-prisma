@@ -37,11 +37,14 @@ export const insertOrUpdateProfileIntoDB = async (
 };
 
 export const getUsersToDB = async () => {
-  const result = await prisma.user.findMany({
-    include: {
-      profile: true,
-    },
-  });
+  // const result = await prisma.user.findMany({
+  //   include: {
+  //     profile: true,
+  //   },
+  // });
+
+  //Using Raw Database
+  const result = await prisma.$queryRaw`SELECT * FROM users`;
   return result;
 };
 
